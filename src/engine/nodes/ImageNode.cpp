@@ -22,7 +22,7 @@ void ImageNode::getPluginDescription (PluginDescription& desc) const
 {
     desc.name             = "Image";
     desc.descriptiveName  = "Single image display.";
-    desc.manufacturerName = "Kushview";
+    desc.manufacturerName = "Element";
     desc.fileOrIdentifier = EL_INTERNAL_ID_IMAGE;
     desc.uniqueId         = EL_INTERNAL_UID_IMAGE;
     desc.pluginFormatName = EL_INTERNAL_FORMAT_NAME;
@@ -58,14 +58,14 @@ VideoOutputNode::VideoOutputNode() {
     setPorts (ports);
 }
 
-VideoOutputNode::~VideoOutputNode() { }
+VideoOutputNode::~VideoOutputNode() {}
 
 void VideoOutputNode::getPluginDescription (PluginDescription& desc) const {
     desc.name = "Video Output";
     desc.descriptiveName = "Video Output";
-    desc.manufacturerName = "Kushview";
-    desc.fileOrIdentifier = "el.videoOutput"; //EL_INTERNAL_ID_IMAGE;
-    desc.uniqueId         = 1122; // EL_INTERNAL_UID_IMAGE;
+    desc.manufacturerName = "Element";
+    desc.fileOrIdentifier = EL_INTERNAL_ID_VIDEO_OUTPUT;
+    desc.uniqueId         = EL_INTERNAL_UID_VIDEO_OUTPUT;
     desc.pluginFormatName = EL_INTERNAL_FORMAT_NAME;
 }
 

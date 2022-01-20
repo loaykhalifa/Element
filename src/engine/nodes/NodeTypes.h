@@ -83,4 +83,4 @@
 #define EL_INTERNAL_UID_ALLPASS_FILTER           1025
 #define EL_INTERNAL_UID_VOLUME                   1026
 #define EL_INTERNAL_UID_IMAGE                    1027
-#define EL_INTERNAL_ID_VIDEO_OUTPUT              1028
+#define EL_INTERNAL_UID_VIDEO_OUTPUT              1028

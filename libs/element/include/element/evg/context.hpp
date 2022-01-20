@@ -13,9 +13,9 @@ class Context {
 public:
     explicit Context (Device&);
     ~Context();
-    
+
     Device& get_device() noexcept { return device; }
-    
+
     //=========================================================================
     void save_state();
     void restore_state();
@@ -29,8 +29,8 @@ public:
 
     Program& default_program() const noexcept;
     Texture* load_image_data (const uint8_t*, evgColorFormat format, int width, int height);
-    Shader*  reserve_vertex_shader();
-    Shader*  reserve_fragment_shader();
+    Shader* reserve_vertex_shader();
+    Shader* reserve_fragment_shader();
     Program* reserve_program();
 
 private:
@@ -41,4 +41,4 @@ private:
     bool save_pending = false;
     void save_if_pending();
 };
-}
+} // namespace evg

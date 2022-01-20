@@ -4,9 +4,9 @@
 #include <iostream>
 
 #include "element/context.hpp"
-#include "element/graphics.hpp"
 #include "element/evg/image_source.hpp"
 #include "element/evg/solid_source.hpp"
+#include "element/graphics.hpp"
 
 #include "video.hpp"
 
@@ -19,7 +19,7 @@ struct fps_to_nanoseconds {
 using FPS30 = fps_to_nanoseconds<30>;
 using FPS60 = fps_to_nanoseconds<60>;
 using FPS24 = fps_to_nanoseconds<24>;
-using FPS5  = fps_to_nanoseconds<5>;
+using FPS5 = fps_to_nanoseconds<5>;
 
 class TestDisplay : public evg::Display {
 public:
@@ -190,7 +190,7 @@ void Video::stop_thread()
 {
     if (is_running()) {
         stopflag.store (1);
-        
+
         int retries = 4;
         while (is_running() && --retries >= 0) {
             std::this_thread::sleep_for (std::chrono::milliseconds (14));

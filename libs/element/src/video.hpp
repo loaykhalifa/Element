@@ -24,10 +24,11 @@
 #include <thread>
 
 #include <element/element.h>
-#include <element/graphics.hpp>
 #include <element/evg/device.hpp>
+#include <element/graphics.hpp>
 
-struct elVideo{};
+struct elVideo {
+};
 
 namespace element {
 
@@ -39,14 +40,14 @@ class Video final {
 public:
     Video();
     ~Video();
-    
+
     evg::Display* create_display (const evgSwapInfo* setup);
     bool load_device_descriptor (const evgDescriptor* desc);
     evg::Device& graphics_device() { return *graphics; }
 
-    bool is_running()   const noexcept { return running.load() == 1; }
-    bool should_stop()  const noexcept { return stopflag.load() == 1; }
-    
+    bool is_running() const noexcept { return running.load() == 1; }
+    bool should_stop() const noexcept { return stopflag.load() == 1; }
+
     void start_thread();
     void stop_thread();
 
@@ -60,4 +61,4 @@ private:
     static void thread_entry (Video& video);
 };
 
-}
+} // namespace element

@@ -66,7 +66,8 @@ void Device::viewport (int x, int y, int width, int height)
     desc.viewport (device, x, y, width, height);
 }
 
-void Device::clear (uint32_t flags, uint32_t color, double depth, int stencil) {
+void Device::clear (uint32_t flags, uint32_t color, double depth, int stencil)
+{
     desc.clear (device, flags, color, depth, stencil);
 }
 

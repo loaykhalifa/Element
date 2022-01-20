@@ -1,9 +1,9 @@
 
 #pragma once
 
-#include <element/plugin.h>
 #include "manifest.hpp"
 #include "search_path.hpp"
+#include <element/plugin.h>
 
 namespace element {
 
@@ -27,13 +27,15 @@ public:
 #endif
     }
 
-    constexpr bool is_open() const noexcept {
+    constexpr bool is_open() const noexcept
+    {
         return library != nullptr && mod != nullptr && handle != nullptr;
     }
 
-    constexpr const void* extension (const std::string& ID) const noexcept {
+    constexpr const void* extension (const std::string& ID) const noexcept
+    {
         return mod && handle && mod->extension ? mod->extension (handle, ID.c_str())
-            : nullptr;
+                                               : nullptr;
     }
 
     bool open();
@@ -107,7 +109,8 @@ public:
         return (int) discovered.size();
     }
 
-    void unload_all() {
+    void unload_all()
+    {
         for (const auto& mod : mods) {
             mod->unload();
             mod->close();
@@ -122,4 +125,4 @@ private:
     std::map<std::string, std::string> discovered;
 };
 
-}
+} // namespace element

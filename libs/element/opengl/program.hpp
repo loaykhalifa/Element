@@ -15,7 +15,8 @@ public:
 
     void set_uniform_value (int index, uint32_t size, const void* data)
     {
-        memcpy (res[index].uniform->current_value.get(), data, size);;
+        memcpy (res[index].uniform->current_value.get(), data, size);
+        ;
     }
 
     void load_buffers (Buffer** vb, Buffer* ib);
@@ -79,4 +80,4 @@ private:
     static void _update_resource (evgHandle program, int key, uint32_t size, const void* data);
 };
 
-}
+} // namespace gl

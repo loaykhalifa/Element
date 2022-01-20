@@ -275,7 +275,7 @@ public:
     //=========================================================================
     void save_state();
     void restore_state();
-    
+
     //=========================================================================
     void enable (uint32_t what, bool enabled);
 
@@ -292,17 +292,17 @@ public:
     void load_index_buffer (Buffer* const ib) noexcept;
     void load_vertex_buffer (Buffer* vbuf, int slot) noexcept;
     void load_swap (const Swap* const swap) noexcept;
-    
+
     inline void load_texture (Texture* texture, int unit) noexcept
     {
         desc.load_texture (device, texture != nullptr ? texture->handle : nullptr, unit);
     }
-    
+
     inline void load_stencil (Stencil* stencil) noexcept
     {
         desc.load_stencil (device, stencil != nullptr ? stencil->handle : nullptr);
     }
-    
+
     inline void load_target (Texture* texture) noexcept
     {
         desc.load_target (device, texture != nullptr ? texture->handle : nullptr);
@@ -342,10 +342,10 @@ public:
     virtual ~Display() = default;
 
 protected:
-    Display () = default;
+    Display() = default;
 
 private:
-    EL_DISABLE_COPY(Display);
+    EL_DISABLE_COPY (Display);
 };
 
 } // namespace evg

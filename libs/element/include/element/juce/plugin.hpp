@@ -26,5 +26,5 @@ typedef struct {
     /** Handle to internal data */
     elHandle handle;
     /** Factory function. */
-    juce::AudioPluginFormat* (*create)(elHandle handle);
+    juce::AudioPluginFormat* (*create) (elHandle handle);
 } elJuceAudioPluginFormat;

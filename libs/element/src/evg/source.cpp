@@ -7,4 +7,4 @@ Source::~Source() {}
 
 void Source::expose (Context&) {}
 
-}
+} // namespace evg

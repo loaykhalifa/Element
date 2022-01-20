@@ -11,4 +11,4 @@ public:
     virtual void expose (Context& ctx);
 };
 
-}
+} // namespace evg

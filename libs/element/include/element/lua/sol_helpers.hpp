@@ -10,11 +10,12 @@ namespace lua {
     @param tbl Input table
     @param field The field to remove. Lua type MUST be a table
 */
-inline static sol::table remove_and_clear (sol::table tbl, const char* field) {
+inline static sol::table remove_and_clear (sol::table tbl, const char* field)
+{
     auto F = tbl.get<sol::table> (field);
     tbl.clear();
     return F;
 }
 
-}
-}
+} // namespace lua
+} // namespace element

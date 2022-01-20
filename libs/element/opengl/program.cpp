@@ -57,8 +57,8 @@ bool Program::link (Shader* vs, Shader* fs)
 
     std::vector<gl::Shader::Resource> shres;
     shres.reserve (res.size());
-    shres.insert (std::begin(shres), std::begin(vs->resources()), std::end (vs->resources()));
-    shres.insert (std::begin(shres), std::begin(fs->resources()), std::end (fs->resources()));
+    shres.insert (std::begin (shres), std::begin (vs->resources()), std::end (vs->resources()));
+    shres.insert (std::begin (shres), std::begin (fs->resources()), std::end (fs->resources()));
 
     for (auto const& vsres : shres) {
         res.push_back (Resource());
@@ -188,7 +188,7 @@ void Program::process_uniforms()
                 glUniform1f (u->location, *(GLfloat*) u->current_value.get());
                 break;
             case EVG_VALUE_MAT4X4:
-                glUniformMatrix4fv (u->location, 1, GL_FALSE, (GLfloat*)u->current_value.get());
+                glUniformMatrix4fv (u->location, 1, GL_FALSE, (GLfloat*) u->current_value.get());
                 break;
             default:
                 break;
@@ -226,7 +226,8 @@ const evgResource* Program::_resource (evgHandle ph, uint32_t index)
     return index < self.res.size() ? &self.res[index].resource : nullptr;
 }
 
-void Program::_update_resource (evgHandle ph, int key, uint32_t size, const void* data) {
+void Program::_update_resource (evgHandle ph, int key, uint32_t size, const void* data)
+{
     auto& self = *static_cast<Program*> (ph);
     if (auto u = self.res[key].uniform.get()) {
         u->changed = true;

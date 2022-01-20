@@ -179,8 +179,6 @@ done:
     return;
 }
 
-
-
 //=============================================================================
 void Device::_enter_context (evgHandle dh)
 {
@@ -198,12 +196,14 @@ void Device::_clear_context (evgHandle dh)
 }
 
 //=============================================================================
-void Device::_save_state (evgHandle dh) {
+void Device::_save_state (evgHandle dh)
+{
     auto device = static_cast<Device*> (dh);
     device->state = device->state_stack.push();
 }
 
-void Device::_restore_state (evgHandle dh) {
+void Device::_restore_state (evgHandle dh)
+{
     auto device = static_cast<Device*> (dh);
     device->state = device->state_stack.pop();
 }

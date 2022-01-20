@@ -86,7 +86,6 @@ public:
 
     void expose_image (evg::Context& ctx)
     {
-        
     }
 
     void load_texture (evg::Context& ctx)

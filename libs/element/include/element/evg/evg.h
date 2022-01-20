@@ -229,7 +229,7 @@ typedef struct {
 
     void (*save_state) (evgHandle device);
     void (*restore_state) (evgHandle device);
-    
+
     void (*enable) (evgHandle device, uint32_t enablement, bool enabled);
 
     void (*viewport) (evgHandle device, int x, int y, int width, int height);

@@ -7,8 +7,8 @@
 extern "C" {
 #endif
 
-#define EL_PREFIX "el."
-#define EL_EXTENSION__Main EL_PREFIX "Main"
+#define EL_PREFIX                 "el."
+#define EL_EXTENSION__Main        EL_PREFIX "Main"
 #define EL_EXTENSION__LuaPackages EL_PREFIX "LuaPackages"
 
 typedef void* elHandle;
@@ -47,17 +47,17 @@ typedef struct elDescriptor {
 } elDescriptor;
 
 #ifdef __cplusplus
-#define EL_PLUGIN_EXTERN extern "C"
+    #define EL_PLUGIN_EXTERN extern "C"
 #else
-#define EL_PLUGIN_EXTERN
+    #define EL_PLUGIN_EXTERN
 #endif
 
 #ifdef _WIN32
-#define EL_PLUGIN_EXPORT EL_PLUGIN_EXTERN __declspec(dllexport)
+    #define EL_PLUGIN_EXPORT EL_PLUGIN_EXTERN __declspec(dllexport)
 #else
-// *nix exports
-#define EL_PLUGIN_EXPORT \
-    EL_PLUGIN_EXTERN __attribute__ ((visibility ("default")))
+    // *nix exports
+    #define EL_PLUGIN_EXPORT \
+        EL_PLUGIN_EXTERN __attribute__ ((visibility ("default")))
 #endif
 
 typedef const elDescriptor* (*elDescriptorFunction)();

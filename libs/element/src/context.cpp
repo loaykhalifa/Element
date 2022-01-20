@@ -7,8 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "element/evg/device.hpp"
 #include "element/context.hpp"
+#include "element/evg/device.hpp"
 #include "element/graphics.hpp"
 #include "element/plugin.h"
 
@@ -49,7 +49,7 @@ Context::~Context()
     scripting.reset();
     video.reset();
     modules->unload_all();
-    modules.reset();   
+    modules.reset();
 }
 
 void Context::open_module (const std::string& ID)
@@ -133,7 +133,8 @@ void Context::discover_modules()
     modules->discover();
 }
 
-evg::Display* Context::test_create_video_display (const evgSwapInfo* setup) {
+evg::Display* Context::test_create_video_display (const evgSwapInfo* setup)
+{
     return video->create_display (setup);
 }
 

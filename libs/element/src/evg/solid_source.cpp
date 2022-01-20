@@ -1,7 +1,7 @@
 
-#include "element/graphics.hpp"
 #include "element/evg/solid_source.hpp"
 #include "element/evg/context.hpp"
+#include "element/graphics.hpp"
 
 namespace evg {
 
@@ -57,7 +57,6 @@ public:
         if (! verts || ! index)
             return;
 
-        
         auto pts = (evgVec3*) verts->data();
         float scale = 2.f;
         evg_vec3_set (pts, scale * 0.5f, scale * 0.5f, 0.0f);

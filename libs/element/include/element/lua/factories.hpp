@@ -18,16 +18,17 @@
 
 #pragma once
 
-#include <utility>
-#include <lua.hpp>
 #include <element/element.h>
+#include <lua.hpp>
 #include <string.h>
+#include <utility>
 
 namespace element {
 namespace lua {
 
-template<typename T>
-T** new_userdata (lua_State* L, const char* metatable) {
+template <typename T>
+T** new_userdata (lua_State* L, const char* metatable)
+{
     T** data = (T**) lua_newuserdata (L, sizeof (T**));
     if (strlen (metatable) > 0)
         luaL_setmetatable (L, metatable);
@@ -35,8 +36,9 @@ T** new_userdata (lua_State* L, const char* metatable) {
     return data;
 }
 
-template<typename T, typename... Args>
-T** new_userdata (lua_State* L, const char* metatable, Args&& ...args) {
+template <typename T, typename... Args>
+T** new_userdata (lua_State* L, const char* metatable, Args&&... args)
+{
     T** data = (T**) lua_newuserdata (L, sizeof (T**));
     if (strlen (metatable) > 0)
         luaL_setmetatable (L, metatable);
@@ -44,4 +46,5 @@ T** new_userdata (lua_State* L, const char* metatable, Args&& ...args) {
     return data;
 }
 
-}}
+} // namespace lua
+} // namespace element

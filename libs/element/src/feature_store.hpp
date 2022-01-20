@@ -1,12 +1,13 @@
 
+#include <element/plugin.h>
 #include <memory>
 #include <vector>
-#include <element/plugin.h>
 
 /** Feature implementation template. 
  *  The template parameter should be a
 */
-template<typename CType> class FeatureData {
+template <typename CType>
+class FeatureData {
 public:
     using data_type = CType;
     ~FeatureData() = default;
@@ -46,33 +47,33 @@ private:
 class Features final {
 public:
     using VectorType = std::vector<const elFeature*>;
-    
-    Features() { features.push_back(nullptr); }
-    Features(const elFeature* const* cfeatures)
+
+    Features() { features.push_back (nullptr); }
+    Features (const elFeature* const* cfeatures)
     {
         for (int i = 0; cfeatures[i] != nullptr; ++i) {
-            features.push_back(cfeatures[i]);
+            features.push_back (cfeatures[i]);
         }
-        features.push_back(nullptr);
+        features.push_back (nullptr);
     }
 
     ~Features() { features.clear(); }
 
     void clear() noexcept { features.clear(); }
     size_t size() const noexcept { return features.size() - 1; }
-    void reserve(size_t num) { features.reserve(num); }
+    void reserve (size_t num) { features.reserve (num); }
     auto begin() const noexcept { return features.cbegin(); }
-    auto end() const noexcept { return std::prev(features.cend()); }
+    auto end() const noexcept { return std::prev (features.cend()); }
 
-    const void* find(const char* ID) const noexcept
+    const void* find (const char* ID) const noexcept
     {
         for (const auto* f : *this)
-            if (strcmp(f->ID, ID) == 0)
+            if (strcmp (f->ID, ID) == 0)
                 return f->data;
         return nullptr;
     }
 
-    bool contains(const char* ID) const noexcept { return nullptr != find(ID); }
+    bool contains (const char* ID) const noexcept { return nullptr != find (ID); }
     elFeatures c_type() const noexcept { return features.data(); }
     operator const elFeature* const *() const noexcept
     {
@@ -81,9 +82,9 @@ public:
 
 private:
     VectorType features;
-    Features(const Features& o) = delete;
-    Features(const Features&& o) = delete;
-    Features& operator=(const Features& o) = delete;
+    Features (const Features& o) = delete;
+    Features (const Features&& o) = delete;
+    Features& operator= (const Features& o) = delete;
 };
 
 /** Collection of feature implementations. */
@@ -94,7 +95,7 @@ public:
 
     operator elFeatures() const noexcept
     {
-        build_cached(false);
+        build_cached (false);
         return cached.data();
     }
 
@@ -105,14 +106,15 @@ public:
 
         @param ft The feature to add
      */
-    void add_type(FeatureType* ft) noexcept
+    void add_type (FeatureType* ft) noexcept
     {
-        auto sft = std::shared_ptr<FeatureType>(ft);
-        types.push_back(sft);
+        auto sft = std::shared_ptr<FeatureType> (ft);
+        types.push_back (sft);
         ++dirty;
     }
 
-    const void* data (const std::string& feature) const noexcept {
+    const void* data (const std::string& feature) const noexcept
+    {
         for (const auto& f : types)
             if (f->ID() == feature)
                 return f->data();
@@ -129,8 +131,8 @@ public:
     }
 
 private:
-    EL_DISABLE_COPY(FeatureStore)
-    EL_DISABLE_MOVE(FeatureStore)
+    EL_DISABLE_COPY (FeatureStore)
+    EL_DISABLE_MOVE (FeatureStore)
 
     using TypeVec = std::vector<std::shared_ptr<FeatureType>>;
     TypeVec types;
@@ -141,23 +143,23 @@ private:
     void clear_cached()
     {
         cached.clear();
-        cached.reserve(types.size() + 1);
+        cached.reserve (types.size() + 1);
         ++dirty;
     }
 
-    void build_cached(bool force) const
+    void build_cached (bool force) const
     {
-        (const_cast<FeatureStore*>(this))->build_cached_impl(force);
+        (const_cast<FeatureStore*> (this))->build_cached_impl (force);
     }
 
-    void build_cached_impl(bool force)
+    void build_cached_impl (bool force)
     {
-        if (dirty == 0 && !force)
+        if (dirty == 0 && ! force)
             return;
         clear_cached();
         for (const auto& t : types)
-            cached.push_back(t->c_type());
-        cached.push_back(nullptr);
+            cached.push_back (t->c_type());
+        cached.push_back (nullptr);
         dirty = 0;
     }
 };

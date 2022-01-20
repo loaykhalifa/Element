@@ -190,21 +190,20 @@ static inline GLenum stencil_format (evgStencilFormat format)
 
 static inline GLenum stencil_attachment (evgStencilFormat format)
 {
-	switch (format) {
+    switch (format) {
+        case EVG_STENCIL_16:
+            return GL_DEPTH_ATTACHMENT;
+        case EVG_STENCIL_24_S8:
+            return GL_DEPTH_STENCIL_ATTACHMENT;
+        case EVG_STENCIL_32F:
+            return GL_DEPTH_ATTACHMENT;
+        case EVG_STENCIL_32F_S8X24:
+            return GL_DEPTH_STENCIL_ATTACHMENT;
+        case EVG_STENCIL_NONE:
+            return 0;
+    }
 
-	case EVG_STENCIL_16:
-		return GL_DEPTH_ATTACHMENT;
-	case EVG_STENCIL_24_S8:
-		return GL_DEPTH_STENCIL_ATTACHMENT;
-	case EVG_STENCIL_32F:
-		return GL_DEPTH_ATTACHMENT;
-	case EVG_STENCIL_32F_S8X24:
-		return GL_DEPTH_STENCIL_ATTACHMENT;
-	case EVG_STENCIL_NONE:
-		return 0;
-	}
-
-	return 0;
+    return 0;
 }
 
 template <typename... Tps>

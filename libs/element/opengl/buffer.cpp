@@ -10,7 +10,7 @@ Buffer::Buffer (evgBufferType btype, uint32_t capacity, uint32_t flags)
     info.capacity = capacity;
     info.size = capacity;
     dynamic = (flags & EVG_DYNAMIC) != 0;
-    
+
     switch (info.type) {
         case EVG_BUFFER_ARRAY:
             target = GL_ARRAY_BUFFER;
@@ -43,13 +43,12 @@ bool Buffer::create_buffers()
         return false;
 
     bool result = true;
-    glBufferData (target, info.capacity, nullptr, 
-        is_dynamic() ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
+    glBufferData (target, info.capacity, nullptr, is_dynamic() ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);
     if (! check_ok ("gl::Buffer::create_buffers()"))
         result = false;
     if (! gl::bind_buffer (target, 0))
         result = false;
-    
+
     return result;
 }
 

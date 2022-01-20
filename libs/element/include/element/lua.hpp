@@ -1,9 +1,9 @@
 #pragma once
 
 extern "C" {
+#include <lauxlib.h>
 #include <lua.h>
 #include <lualib.h>
-#include <lauxlib.h>
 }
 
 #include <map>
@@ -15,4 +15,5 @@ namespace lua {
 using CFunction = lua_CFunction;
 using PackageLoaderMap = std::map<std::string, CFunction>;
 
-}}
+} // namespace lua
+} // namespace element

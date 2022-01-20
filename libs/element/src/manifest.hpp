@@ -18,7 +18,8 @@ struct Manifest {
         this->provides = std::move (o.provides);
     }
 
-    Manifest& operator= (const Manifest& o) {
+    Manifest& operator= (const Manifest& o)
+    {
         name = o.name;
         provides = o.provides;
         return *this;

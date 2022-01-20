@@ -8,8 +8,8 @@
 
 #include <X11/Xlib-xcb.h>
 
-#include "opengl.hpp"
 #include "helpers.hpp"
+#include "opengl.hpp"
 
 namespace gl {
 
@@ -60,7 +60,8 @@ public:
     unique_xptr (T* ptr) : parent_type (ptr, __delete) {}
 
 private:
-    static int __delete (void* data) {
+    static int __delete (void* data)
+    {
         return XFree (data);
     }
 };
@@ -93,8 +94,6 @@ static int log_x11_error (Display* display, XErrorEvent* error)
     fprintf (stderr, "X Error: %s, Major: %s, Minor: %s, Serial: %lu", err, request, minor, error->serial);
     return 0;
 }
-
-
 
 class GLXPlatform final : public Platform {
 public:
@@ -409,8 +408,6 @@ error:
         XCloseDisplay (display);
     return nullptr;
 }
-
-
 
 static bool glx_create_new (Display* display, GLXContext& context, GLXPbuffer& pbuffer)
 {

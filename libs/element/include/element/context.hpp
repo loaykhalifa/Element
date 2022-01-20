@@ -1,11 +1,11 @@
 
 #pragma once
 
+#include <element/element.h>
+#include <element/graphics.hpp>
 #include <iostream>
 #include <memory>
 #include <string>
-#include <element/element.h>
-#include <element/graphics.hpp>
 
 namespace element {
 
@@ -32,12 +32,12 @@ public:
     evg::Display* test_create_video_display (const evgSwapInfo*);
 
 private:
-    EL_DISABLE_COPY(Context);
-    EL_DISABLE_MOVE(Context);
+    EL_DISABLE_COPY (Context);
+    EL_DISABLE_MOVE (Context);
     friend class Module; // FIXME
     std::unique_ptr<Modules> modules;
     std::unique_ptr<Scripting> scripting;
     std::unique_ptr<Video> video;
 };
 
-}
+} // namespace element

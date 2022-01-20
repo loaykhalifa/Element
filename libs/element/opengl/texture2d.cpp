@@ -37,7 +37,8 @@ static inline uint32_t evg_nlevels (uint32_t width, uint32_t height, uint32_t de
     return nlevels;
 }
 
-static inline uint32_t evg_nlevels_2d (uint32_t width, uint32_t height) {
+static inline uint32_t evg_nlevels_2d (uint32_t width, uint32_t height)
+{
     return evg_nlevels (width, height, 1);
 }
 
@@ -54,8 +55,7 @@ bool Texture2D::bind_data (const uint8_t** data)
 
     if (! gl::bind_texture (GL_TEXTURE_2D, texture))
         return false;
-    success = gl::init_face (GL_TEXTURE_2D, gl_format_type, num_levels, gl_format, gl_format_internal, 
-                                            compressed, width(), height(), tex_size, &data);
+    success = gl::init_face (GL_TEXTURE_2D, gl_format_type, num_levels, gl_format, gl_format_internal, compressed, width(), height(), tex_size, &data);
 
     // glTexImage2D (gl_target, num_levels - 1, GL_RGBA, width(), height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, *data);
     if (! gl::check_ok ("tex image 2d"))
@@ -63,7 +63,7 @@ bool Texture2D::bind_data (const uint8_t** data)
 
     if (! gl::tex_param_i (GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, num_levels - 1))
         success = false;
-    
+
     gl::tex_param_i (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl::tex_param_i (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     gl::tex_param_i (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -79,7 +79,7 @@ bool Texture2D::upload_data (const uint8_t** data)
 {
     if (texture == 0) {
         std::cerr << "texture not gnerated yet\n";
-        if  (! gl::gen_textures (1, &texture))
+        if (! gl::gen_textures (1, &texture))
             return false;
     }
 
@@ -110,4 +110,4 @@ bool Texture2D::upload_data (const uint8_t** data)
     return false;
 }
 
-}
+} // namespace gl

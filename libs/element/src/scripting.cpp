@@ -1,9 +1,9 @@
 
-#include <iostream>
-#include <sol/sol.hpp>
+#include "scripting.hpp"
 #include <element/config.h>
 #include <element/context.hpp>
-#include "scripting.hpp"
+#include <iostream>
+#include <sol/sol.hpp>
 
 namespace element {
 namespace lua {
@@ -69,8 +69,6 @@ private:
         package[skey] = new_searchers;                   // replace them
 #endif
     }
-
-    
 
     /** Custom lua searcher handler */
     static int resolve_internal_package (lua_State* L)

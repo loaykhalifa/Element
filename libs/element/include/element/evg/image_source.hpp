@@ -13,7 +13,7 @@ class EL_API ImageSource : public Source {
 public:
     ImageSource();
     ~ImageSource();
-    
+
     bool load_file (const std::string& file);
     void process_frame();
     void expose (Context& ctx) override;
@@ -27,4 +27,4 @@ private:
     int width = 0, height = 0;
 };
 
-}
+} // namespace evg

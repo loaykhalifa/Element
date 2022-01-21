@@ -1,6 +1,12 @@
 
 #pragma once
 
+#include <map>
+#include <string>
+#include <vector>
+
+#include <element/plugin.h>
+
 #include "manifest.hpp"
 #include "search_path.hpp"
 #include <element/plugin.h>

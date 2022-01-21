@@ -4,7 +4,12 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <xmmintrin.h>
+
+#if defined(__arm__) || defined(__aarch64__)
+    #include "element/evg/sse2neon.h"
+#else
+    #include <xmmintrin.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

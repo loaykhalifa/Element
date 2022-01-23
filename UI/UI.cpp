@@ -10,6 +10,8 @@
 
 #define EL_MODULE__UI EL_PREFIX "UI"
 
+#define TEST_WINDOW 0
+#if TEST_WINDOW
 class TestContent : public juce::Component {
 public:
     TestContent()
@@ -89,6 +91,8 @@ private:
     bool quitflag = false;
 };
 
+#endif
+
 extern "C" {
 extern int luaopen_el_Rectangle (lua_State*);
 }
@@ -98,7 +102,7 @@ extern void initializeWorld (Globals&);
 extern void shutdownWorld (Globals&, AppController&);
 } // namespace Element
 
-#define TEST_WINDOW 0
+
 
 struct UI final {
     UI()
@@ -116,7 +120,9 @@ struct UI final {
     ~UI()
     {
         app.reset();
+        #if TEST_WINDOW
         window.reset();
+        #endif
     }
 
     bool initializeApp()
@@ -136,7 +142,9 @@ struct UI final {
     std::unique_ptr<Element::Application> app;
     std::unique_ptr<Element::Globals> world;
     std::unique_ptr<Element::AppController> controller;
+#if TEST_WINDOW
     std::unique_ptr<TestWindow> window;
+#endif
     element::Context* context = nullptr;
 };
 
@@ -239,7 +247,7 @@ static const void* ui_extension (elHandle handle, const char* name)
     return nullptr;
 }
 
-EL_EXPORT
+extern "C" EL_EXPORT
 const elDescriptor* element_descriptor()
 {
     static const luaL_Reg packages[] = {

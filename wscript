@@ -399,7 +399,7 @@ def build_libjuce (bld):
 def build_libelement (bld):
     env = bld.env.derive()
     for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
-        env.append_unique (k, [ '-fPIC' ])
+        env.append_unique (k, [ '-fPIC', '-fvisibility=hidden' ])
     
     library = bld (
         features    = 'cxx cxxshlib',
@@ -412,9 +412,9 @@ def build_libelement (bld):
         name        = 'ELEMENT',
         env         = env,
         use         = [ 'DEPENDS', 'LUA' ],
-        cflags      = [ '-fvisibility=hidden' ],
-        cxxflags    = [ '-fvisibility=hidden' ],
-        defines     = [ 'EL_PRO=1', 'EL_DLLEXPORT=1' ],
+        cflags      = [],
+        cxxflags    = [],
+        defines     = [ 'EL_PRO=1' ],
         linkflags   = [],
         vnum        = '0.47.0',
         install_path = bld.env.LIBDIR
@@ -435,7 +435,8 @@ def build_libelement (bld):
     if bld.host_is_linux():
         library.use.append ('DL')
         library.use.append ('PTHREAD')
-    
+    elif bld.host_is_windows():
+        library.defines += [ 'EL_DLLEXPORT=1' ]
     library.export_includes = library.includes
     bld.add_group()
 
@@ -481,9 +482,9 @@ def build_libelement_juce (bld):
         name        = 'ELEMENT_JUCE',
         env         = env,
         defines     = [ 'EL_PRO=1' ],
-        use         = [ 'DEPENDS', 'ELEMENT', 'LUA' ],
+        use         = [ 'DEPENDS', 'ELEMENT' ],
         cflags      = [ '-fvisibility=hidden' ],
-        cxxflags    = [ '-fvisibility=hidden', '-Wno-implicit-int-float-conversion' ],
+        cxxflags    = [ '-fvisibility=hidden' ],
         linkflags   = [ '-fvisibility=hidden' ],
         vnum        = '0.47.0',
         install_path = bld.env.LIBDIR
@@ -493,6 +494,7 @@ def build_libelement_juce (bld):
 
     if bld.host_is_linux():
         library.use += ['FREETYPE2', 'X11', 'DL', 'PTHREAD', 'ALSA', 'XEXT', 'CURL']
+        library.cxxflags += ['-Wno-implicit-int-float-conversion']
         # library.cxxflags += [
         #     '-DLUA_PATH_DEFAULT="%s"'  % env.LUA_PATH_DEFAULT,
         #     '-DLUA_CPATH_DEFAULT="%s"' % env.LUA_CPATH_DEFAULT,
@@ -506,14 +508,15 @@ def build_libelement_juce (bld):
             'CORE_AUDIO_KIT', 'COCOA', 'CORE_MIDI', 'IO_KIT', 'QUARTZ_CORE',
             'TEMPLATES'
         ]
+        library.cxxflags += ['-Wno-implicit-int-float-conversion']
 
     elif bld.host_is_mingw32():
         for l in element.mingw_libs.split():
             library.use.append (l.upper())
         if bld.env.DEBUG:
             library.env.append_unique ('CXXFLAGS', ['-Wa,-mbig-obj'])
-        # library.defines.append ('EL_DLLEXPORT=1')
-        # library.defines.append ('JUCE_DLL_BUILD=1')
+        library.defines.append ('EL_DLLEXPORT=1')
+        library.defines.append ('JUCE_DLL_BUILD=1')
         # library.env.append_unique ('LINKFLAGS_STATIC_GCC', [ '-static-libgcc', '-static-libstdc++',
         #                                                  '-Wl,-Bstatic,--whole-archive', '-lwinpthread', 
         #                                                  '-Wl,--no-whole-archive' ])
@@ -554,7 +557,7 @@ def build_juce_app (bld):
         target      = 'modules/UI.element/UI',
         name        = 'ELEMENT_UI',
         env         = appEnv,
-        use         = [ 'ELEMENT', 'ELEMENT_JUCE', 'LUA' ],
+        use         = [ 'ELEMENT', 'ELEMENT_JUCE', 'DEPENDS' ],
         cflags      = ['-fvisibility=hidden' ],
         cxxflags    = ['-fvisibility=hidden' ],
         linkflags   = ['-fvisibility=hidden' ],
@@ -572,19 +575,21 @@ def build_juce_app (bld):
     if bld.host_is_linux():
         build_desktop (bld)
 
-    # elif bld.host_is_mac():
-    #     app.target       = 'Applications/Element'
-    #     app.mac_app      = True
-    #     app.mac_plist    = 'build/data/Info.plist'
-    #     app.mac_files    = [ 'data/Icon.icns' ]
-    #     add_scripts_to (bld, '%s.app/Contents/Resources' % app.target, None)
+    elif bld.host_is_mac():
+        pass
+        # app.target       = 'Applications/Element'
+        # app.mac_app      = True
+        # app.mac_plist    = 'build/data/Info.plist'
+        # app.mac_files    = [ 'data/Icon.icns' ]
+        # add_scripts_to (bld, '%s.app/Contents/Resources' % app.target, None)
 
-    # elif bld.host_is_mingw32():
-    #     # app.env.append_unique ('LINKFLAGS_STATIC_GCC', [ '-static-libgcc', '-static-libstdc++',
-    #     #                                                  '-Wl,-Bstatic,--whole-archive', '-lwinpthread', 
-    #     #                                                  '-Wl,--no-whole-archive' ])
-    #     # app.use += [ 'STATIC_GCC' ]
-    #     app.install_path = bld.env.BINDIR
+    elif bld.host_is_mingw32():
+        app.defines += ['JUCE_DLL_BUILD=1', 'EL_DLLEXPORT=1']
+        # app.env.append_unique ('LINKFLAGS_STATIC_GCC', [ '-static-libgcc', '-static-libstdc++',
+        #                                                  '-Wl,-Bstatic,--whole-archive', '-lwinpthread', 
+        #                                                  '-Wl,--no-whole-archive' ])
+        # app.use += [ 'STATIC_GCC' ]
+        # app.install_path = bld.env.BINDIR
 
 def install_lua_files (bld):
     if not bld.host_is_linux() and not bld.host_is_mingw32():
@@ -633,8 +638,8 @@ def build (bld):
         return
 
     build_liblua (bld)
-    build_libelement_opengl (bld)
     build_libelement (bld)
+    build_libelement_opengl (bld)
     build_libelement_juce (bld)
     
     bld.add_group()

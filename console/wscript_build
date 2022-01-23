@@ -1,10 +1,12 @@
+#!/usr/bin/python
+
 console = bld.program (
     source      = [ 'interpreter.cpp', 'main.cpp' ],
     includes    = [ '.' ],
     target      = '../bin/element',
     name        = 'Element',
     env         = bld.env.derive(),
-    use         = [ 'ELEMENT', 'LUA' ],
+    use         = [ 'DEPENDS', 'ELEMENT' ],
     linkflags   = [],
     defines     = []
 )

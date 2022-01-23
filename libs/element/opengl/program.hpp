@@ -24,7 +24,7 @@ public:
     bool create_program();
     bool delete_program();
 
-    inline static const evgProgramInterface* interface()
+    inline static const evgProgramInterface* extension()
     {
         static const evgProgramInterface I = {
             .create = _create,

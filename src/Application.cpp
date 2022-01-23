@@ -188,7 +188,7 @@ void Application::anotherInstanceStarted (const String& commandLine)
 void Application::resumed()
 {
 #if JUCE_WINDOWS
-    auto& devices (backend->globals().getDeviceManager());
+    auto& devices (world->getDeviceManager());
     devices.restartLastAudioDevice();
 #endif
 }

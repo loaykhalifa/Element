@@ -218,7 +218,7 @@ public:
 
     SwapSetup setup;
 
-    static const evgSwapInterface* interface()
+    static const evgSwapInterface* extension()
     {
         static const evgSwapInterface I = {
             .create = _create,
@@ -276,7 +276,7 @@ public:
     void prepare_render (int side = 0) noexcept;
 
     //=========================================================================
-    inline static const evgTextureInterface* interface()
+    inline static const evgTextureInterface* extension()
     {
         static const evgTextureInterface I = {
             .create = _create,
@@ -342,7 +342,7 @@ struct Buffer {
     inline GLuint object() const noexcept { return buffer; }
 
     //=========================================================================
-    inline static const evgBufferInterface* interface()
+    static inline const evgBufferInterface* extension()
     {
         static const evgBufferInterface I = {
             .create = _create,
@@ -410,7 +410,7 @@ public:
     inline const std::vector<Resource>& resources() const noexcept { return res; }
 
     //=========================================================================
-    inline static const evgShaderInterface* interface()
+    inline static const evgShaderInterface* extension()
     {
         static const evgShaderInterface I = {
             .create = _create,
@@ -464,7 +464,7 @@ class Stencil final {
 public:
     ~Stencil() = default;
 
-    inline static const evgStencilInterface* interface()
+    inline static const evgStencilInterface* extension()
     {
         const static evgStencilInterface I = {
             .create = _create,

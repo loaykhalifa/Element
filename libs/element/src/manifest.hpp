@@ -2,9 +2,10 @@
 #pragma once
 
 #include <filesystem>
-#include <sol/sol.hpp>
 #include <string>
 #include <vector>
+
+#include <sol/sol.hpp>
 
 namespace element {
 
@@ -41,7 +42,7 @@ static Manifest read_module_manifest (Tx&& bundle_path)
     state.open_libraries (sol::lib::base, sol::lib::string);
 
     try {
-        state.safe_script_file (f);
+        state.safe_script_file (f.string());
 
         result.name = state.get_or ("name", std::string (""));
 

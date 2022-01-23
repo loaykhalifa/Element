@@ -30,7 +30,7 @@ if bld.host_is_linux():
     opengl.env.append_unique ('LIB_XCB', ['X11-xcb'])
     opengl.use.append ('XCB')
 elif bld.host_is_windows():
-    opengl.source.append ('windows.c')
+    opengl.source.append ('win32_wgl.cpp')
 elif bld.host_is_mac():
     opengl.source.append ('mac.mm')
 

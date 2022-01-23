@@ -28,13 +28,20 @@ mingw_libs = '''
 
 @conf
 def check_liblua (self):
+    if self.env.HAVE_DEPENDS:
+        self.check(header_name='lua.h', uselib_store="LUA", mandatory=True, use='DEPENDS'.split())
+        libdir = os.path.join (self.env.DEPENDSDIR, 'lib')
+        self.env.LINKFLAGS_LUA = ['-L%s' % libdir, os.path.join (libdir, 'lua54.dll') ]
+        self.env.LUA = self.env.HAVE_LUA = True
+        self.define ('HAVE_LUA', self.env.LUA)
+        return
+
     self.env.LUAJIT = bool(self.options.luajit)
     if self.env.LUAJIT:
         self.check_cfg (package='luajit >= 2.1', uselib_store="LUA", 
                         args='--cflags --libs', mandatory=False)
         self.env.LUAJIT = bool (self.env.HAVE_LUA)
         self.define ('HAVE_LUAJIT', True)
-    
 
     if not bool(self.env.LUAJIT):
         self.check_cfg (package='lua5.4', uselib_store="LUA", 

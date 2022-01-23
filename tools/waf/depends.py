@@ -12,6 +12,7 @@ def options (self):
 
 def configure (self):
     d = self.env.DEPENDSDIR = '%s'.strip() % self.options.depends
+    self.env.HAVE_DEPENDS = False
     allow_system = self.env.DEPENDS_ALLOW_SYSTEM = self.options.depends_allow_system
     if not os.path.exists (d):
         return
@@ -19,8 +20,9 @@ def configure (self):
         configfile = open (os.path.join (d, 'share', 'config.json'))
     except:
         self.fatal ("depends.py: could not read config.json")
+
     config = json.load (configfile)
-    
+    self.env.HAVE_DEPENDS = True
     self.env.HOST = os.path.basename (d)
 
     os.environ['PKG_CONFIG_PATH'] = '%s/lib/pkgconfig' % d
@@ -48,7 +50,7 @@ def copydlls (self):
     d = self.env.DEPENDSDIR
     
     # Compiled
-    for dll in [ 'build/lib/element.dll', 'build/lib/element_juce.dll' ]:
+    for dll in [ 'build/lib/element-0.dll', 'build/lib/element-juce-0.dll' ]:
         path = dll
         if os.path.exists (path):
             print ("copy: %s" % path)
@@ -58,11 +60,12 @@ def copydlls (self):
     
     # 3rd party dll's
     for dll in [ 'lib/serd-0.dll', 'lib/sord-0.dll', 'lib/sratom-0.dll', 
-                 'lib/lilv-0.dll', 'lib/suil-0.dll' ]:
+                 'lib/lilv-0.dll', 'lib/suil-0.dll', 'lib/lua54.dll' ]:
         path = os.path.join (d, dll)
         if os.path.exists (path):
             print ("copy: %s" % path)
-            shutil.copy2 (path, 'build/modules/LV2.element')
+            # shutil.copy2 (path, 'build/modules/JLV2.element')
+            shutil.copy2 (path, 'build/bin')
         else:
             self.fatal ("could not copy DLL: %s" % dll)
     

@@ -10,7 +10,7 @@ bld (
     use             = [ 'ELEMENT_JUCE', 'LILV', 'SUIL', 'LV2' ],
     cxxflags        = [ '-fvisibility=hidden' ],
     env             = plugins.derive_env (bld),
-    defines         = []
+    defines         = [ 'JUCE_DLL_BUILD' ]
 )
 
 bld (

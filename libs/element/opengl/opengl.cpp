@@ -124,7 +124,9 @@ void Device::ortho (float left, float right, float top, float bottom, float near
 
 	dst->t.w = 1.0f;
 #else
+#if !defined(WIN32)
     glOrtho (left, right, bottom, top, near, far);
+    #endif
 #endif
 }
 
@@ -342,12 +344,12 @@ const evgDescriptor* Device::descriptor()
         .load_target = _load_target,
         .load_stencil = _load_stencil,
         .load_swap = _load_swap,
-        .buffer = Buffer::interface(),
-        .shader = Shader::interface(),
-        .program = Program::interface(),
-        .texture = Texture::interface(),
-        .stencil = Stencil::interface(),
-        .swap = Swap::interface()
+        .buffer = Buffer::extension(),
+        .shader = Shader::extension(),
+        .program = Program::extension(),
+        .texture = Texture::extension(),
+        .stencil = Stencil::extension(),
+        .swap = Swap::extension()
     };
 
     return &D;

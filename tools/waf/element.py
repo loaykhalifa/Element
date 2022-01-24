@@ -31,9 +31,15 @@ def check_liblua (self):
     if self.env.HAVE_DEPENDS:
         self.check(header_name='lua.h', uselib_store="LUA", mandatory=True, use='DEPENDS'.split())
         libdir = os.path.join (self.env.DEPENDSDIR, 'lib')
-        self.env.LINKFLAGS_LUA = ['-L%s' % libdir, os.path.join (libdir, 'lua54.dll') ]
-        self.env.LUA = self.env.HAVE_LUA = True
-        self.define ('HAVE_LUA', self.env.LUA)
+        if self.host_is_windows():
+            self.env.LINKFLAGS_LUA = ['-L%s' % libdir, os.path.join (libdir, 'lua54.dll') ]
+            self.env.LUA = self.env.HAVE_LUA = True
+            self.define ('HAVE_LUA', self.env.LUA)
+        elif self.host_is_linux() or self.host_is_mac():
+            self.env.LINKFLAGS_LUA = ['-L%s' % libdir ]
+            self.env.LIB_LUA = ['lua5.4']
+            self.env.LUA = self.env.HAVE_LUA = True
+            self.define ('HAVE_LUA', self.env.LUA)
         return
 
     self.env.LUAJIT = bool(self.options.luajit)

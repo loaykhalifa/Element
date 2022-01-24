@@ -414,9 +414,9 @@ def build_libelement (bld):
         use         = [ 'DEPENDS', 'LUA' ],
         cflags      = [],
         cxxflags    = [],
-        defines     = [ 'EL_PRO=1' ],
+        defines     = [],
         linkflags   = [],
-        vnum        = '0.47.0',
+        vnum        = element.VERSION,
         install_path = bld.env.LIBDIR
     )
 
@@ -433,8 +433,7 @@ def build_libelement (bld):
     )
 
     if bld.host_is_linux():
-        library.use.append ('DL')
-        library.use.append ('PTHREAD')
+        library.use += ['DL', 'PTHREAD']
     elif bld.host_is_windows():
         library.defines += [ 'EL_DLLEXPORT=1' ]
     library.export_includes = library.includes

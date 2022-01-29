@@ -387,7 +387,7 @@ def build_libelement_juce (bld):
         name        = 'ELEMENT_JUCE',
         env         = env,
         defines     = [ 'EL_PRO=1' ],
-        use         = [ 'DEPENDS' ],
+        use         = [ 'DEPENDS', 'LUA' ],
         cflags      = [],
         cxxflags    = [],
         linkflags   = [],

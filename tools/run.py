@@ -46,7 +46,7 @@ def main():
 
     print ("Starting application")
     print ("Binary: %s" % ' '.join(cmd))
-    call (cmd + ['ui.lua'])
+    call (cmd)
 
 if __name__ == '__main__':
     main()

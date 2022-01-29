@@ -1,0 +1,25 @@
+#!/bin/env python
+import plugins
+
+def build (bld):
+    bld (
+        features        = 'cxx cxxshlib',
+        includes        = [ '../../libs/jlv2/modules' ],
+        source          = [ 'lv2.cpp' ],
+        name            = 'LV2_element',
+        target          = 'lv2',
+        use             = [ 'ELEMENT_JUCE', 'LILV', 'SUIL', 'LV2' ],
+        cflags          = [ '-fvisibility=hidden' ],
+        cxxflags        = [ '-fvisibility=hidden' ],
+        linkflags       = [ '-fvisibility=hidden' ],
+        env             = plugins.derive_env (bld),
+        install_path    = plugins.install_path (bld, 'lv2'),
+        defines         = [ 'JUCE_DLL_BUILD' ]
+    )
+
+    bld (
+        features        = 'subst',
+        source          = 'manifest.lua',
+        target          = 'manifest.lua',
+        install_path    = plugins.install_path (bld, 'lv2')
+    )

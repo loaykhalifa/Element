@@ -1,0 +1,73 @@
+
+import os
+import element
+
+def build (bld):
+    env = bld.env.derive()
+    for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
+        env.append_unique (k, [ '-fPIC', '-fvisibility=hidden' ])
+
+    lua_module_sources = '''
+        lua/el/audio.c
+        lua/el/bytes.c
+        lua/el/midi.c
+        lua/el/round.c
+        lua/el/vector.c
+    '''.split()
+
+    library_sources = '''
+        src/bindings.cpp
+        src/context.cpp
+        src/module.cpp
+        src/scripting.cpp
+        src/strings.cpp
+        src/video.cpp
+        src/evg/context.cpp
+        src/evg/device.cpp
+        src/evg/image_source.cpp
+        src/evg/program.cpp
+        src/evg/solid_source.cpp
+        src/evg/source.cpp
+        '''.split()
+
+    if bld.host_is_windows():
+        library_sources.append ('src/dlfcn-win32.c')
+
+    library = bld (
+        features    = 'cxx cxxshlib',
+        source      = library_sources + lua_module_sources,
+        includes    = [
+            'include',
+            '../../build/include'
+        ],
+        target      = '../../lib/element',
+        name        = 'ELEMENT',
+        env         = env,
+        use         = [ 'DEPENDS', 'LUA' ],
+        cflags      = [],
+        cxxflags    = [],
+        defines     = [],
+        linkflags   = [],
+        vnum        = element.VERSION,
+        install_path = bld.env.LIBDIR
+    )
+
+    bld (
+        features      = 'subst',
+        source        = '../../element.pc.in',
+        target        = 'element.pc',
+        NAME          = 'ElementPC_FILE',
+        LIBNAME       = os.path.basename (library.target),
+        PREFIX        = bld.env.PREFIX,
+        VERSION       = library.vnum,
+        INCLUDEDIR    = os.path.join (bld.env.PREFIX, 'include'),
+        install_path  = os.path.join (library.install_path, 'pkgconfig')
+    )
+
+    if bld.host_is_linux():
+        library.use += ['DL', 'PTHREAD']
+    elif bld.host_is_windows():
+        library.defines += [ 'EL_DLLEXPORT=1' ]
+    library.export_includes = library.includes
+    bld.env.LINKFLAGS_ELEMENT = 'element'
+    bld.env.CXXFLAGS_ELEMENT = ['-Iinclude']

@@ -18,10 +18,11 @@
 
 #pragma once
 
-#include <element/element.h>
-#include <lua.hpp>
-#include <string.h>
+#include <cstring>
 #include <utility>
+
+#include <element/element.h>
+#include <element/lua.hpp>
 
 namespace element {
 namespace lua {

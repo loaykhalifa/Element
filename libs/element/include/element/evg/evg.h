@@ -274,7 +274,7 @@ inline static const char* evg_color_format_string (evgColorFormat format)
     }
 }
 
-static inline uint32_t evg_color_format_is_compressed (evgColorFormat format)
+inline static uint32_t evg_color_format_is_compressed (evgColorFormat format)
 {
     switch (format) {
         default:
@@ -282,7 +282,8 @@ static inline uint32_t evg_color_format_is_compressed (evgColorFormat format)
     }
     return false;
 }
-static inline uint32_t evg_color_format_bpp (evgColorFormat format)
+
+inline static uint32_t evg_color_format_bpp (evgColorFormat format)
 {
     switch (format) {
         case EVG_COLOR_FORMAT_UNKNOWN:

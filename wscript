@@ -159,7 +159,7 @@ def configure (conf):
     conf.message ("CXXFLAGS",       conf.env.CXXFLAGS)
     conf.message ("LINKFLAGS",      conf.env.LINKFLAGS)
 
-def common_includes():
+def juce_includes():
     return [
         VST3_PATH, \
         'libs/JUCE/modules', \
@@ -170,10 +170,6 @@ def common_includes():
         'build/include', \
         'src'
     ]
-
-def lua_kv_sources (ctx):
-    return ctx.path.ant_glob ('libs/lua-kv/src/kv/**/*.c') + \
-           ctx.path.ant_glob ('libs/lua-kv/src/kv/**/*.cpp')
 
 def juce_sources (ctx):
     return element.get_juce_library_code ("libs/compat")
@@ -255,29 +251,6 @@ def build_lua_docs (bld):
     if bool(bld.env.LDOC):
         call ([bld.env.LDOC[0], '-f', 'markdown', '.' ])
 
-def build_liblua (bld):
-    pass
-    # luaEnv = bld.env.derive()
-    # for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
-    #     luaEnv.append_unique (k, [ '-fPIC' ])
-
-    # lua_kv = bld (
-    #     name     = 'LUA_KV',
-    #     target   = 'lib/lua-kv',
-    #     env      = luaEnv,
-    #     install_path = None,
-    #     features = 'cxx cxxshlib',
-    #     includes = common_includes() + [ 'libs/element/include', \
-    #                                      'libs/lua-kv/include', \
-    #                                      'libs/lua-kv/src' ],
-    #     source = lua_kv_sources (bld),
-    #     use = [ 'LUA' ],
-    #     defines = [ 'JUCE_DLL_BUILD=1' ]
-    # )
-
-    # lua_kv.export_includes = lua_kv.includes
-    # bld.add_group()
-
 def add_scripts_to (bld, builddir, instdir, 
                     modsdir='Modules', 
                     scriptsdir='Scripts'):
@@ -314,7 +287,7 @@ def build_vst_linux (bld, plugin):
             'tools/jucer/%s/Source/%s.cpp' % (plugin, plugin),
             'libs/compat/include_juce_audio_plugin_client_VST2.cpp'
         ],
-        includes        = common_includes(),
+        includes        = juce_includes(),
         target          = 'plugins/VST/%s' % plugin,
         name            = 'ELEMENT_VST',
         env             = vstEnv,
@@ -356,7 +329,7 @@ def build_vst3_linux (bld, plugin):
             'tools/jucer/%s/Source/%s.cpp' % (plugin, plugin),
             'libs/compat/include_juce_audio_plugin_client_VST3.cpp'
         ],
-        includes        = common_includes(),
+        includes        = juce_includes(),
         env             = vstEnv,
         use             = [ 'ELEMENT', 'LUA', vst3.name ]
     )
@@ -371,81 +344,14 @@ def build_vst3 (bld):
         for plugin in 'Element ElementFX'.split():
             build_vst3_linux (bld, plugin)
 
-def build_libjuce (bld):
-    libEnv = bld.env.derive()
-    for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
-        libEnv.append_unique (k, [ '-fPIC' ])
-
-    libjuce = bld (
-        features    = 'cxx cxxstlib',
-        source      = juce_sources (bld),
-        includes    = common_includes(),
-        target      = 'lib/juce',
-        name        = 'LIBJUCE',
-        env         = libEnv,
-        use         = [ 'DEPENDS', 'ASIO' ],
-        defines     = [],
-        cxxflags    = [ '-fvisibility=hidden' ],
-        linkflags   = [],
-        install_path = None
-    )
-
-    if bld.host_is_linux():
-        libjuce.use += ['FREETYPE2', 'X11', 'DL', 'PTHREAD', 'ALSA', 'XEXT', 'CURL']
-    elif bld.host_is_windows():
-        libjuce.defines.append ('JUCE_DLL_BUILD=1')
-    bld.add_group()
-
 def build_libelement (bld):
-    env = bld.env.derive()
-    for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
-        env.append_unique (k, [ '-fPIC', '-fvisibility=hidden' ])
-    
-    library = bld (
-        features    = 'cxx cxxshlib',
-        source      = element_sources (bld),
-        includes    = [
-            'libs/element/include',
-            'build/include'
-        ],
-        target      = 'lib/element',
-        name        = 'ELEMENT',
-        env         = env,
-        use         = [ 'DEPENDS', 'LUA' ],
-        cflags      = [],
-        cxxflags    = [],
-        defines     = [],
-        linkflags   = [],
-        vnum        = element.VERSION,
-        install_path = bld.env.LIBDIR
-    )
-
-    bld (
-        features      = 'subst',
-        source        = 'element.pc.in',
-        target        = 'element.pc',
-        NAME          = 'element',
-        LIBNAME       = os.path.basename (library.target),
-        PREFIX        = bld.env.PREFIX,
-        VERSION       = library.vnum,
-        INCLUDEDIR    = os.path.join (bld.env.PREFIX, 'include'),
-        install_path  = os.path.join (library.install_path, 'pkgconfig')
-    )
-
-    if bld.host_is_linux():
-        library.use += ['DL', 'PTHREAD']
-    elif bld.host_is_windows():
-        library.defines += [ 'EL_DLLEXPORT=1' ]
-    library.export_includes = library.includes
+    bld.recurse ('libs/element')
     bld.add_group()
-
-def build_libelement_opengl (bld):
-    bld.recurse ('libs/element/opengl')
 
 def build_libelement_juce (bld):
     env = bld.env.derive()
     for k in 'CFLAGS CXXFLAGS LINKFLAGS'.split():
-        env.append_unique (k, [ '-fPIC' ])
+        env.append_unique (k, [ '-fPIC', '-fvisibility=hidden' ])
     
     jsources = juce_sources (bld)
     
@@ -476,15 +382,15 @@ def build_libelement_juce (bld):
     library = bld (
         features    = 'cxx cxxshlib',
         source      = el_lua_sources + jsources + app_sources,
-        includes    = common_includes(),
+        includes    = juce_includes() + [ 'libs/element/include' ],
         target      = 'lib/element-juce',
         name        = 'ELEMENT_JUCE',
         env         = env,
         defines     = [ 'EL_PRO=1' ],
-        use         = [ 'DEPENDS', 'ELEMENT' ],
-        cflags      = [ '-fvisibility=hidden' ],
-        cxxflags    = [ '-fvisibility=hidden' ],
-        linkflags   = [ '-fvisibility=hidden' ],
+        use         = [ 'DEPENDS' ],
+        cflags      = [],
+        cxxflags    = [],
+        linkflags   = [],
         vnum        = '0.47.0',
         install_path = bld.env.LIBDIR
     )
@@ -540,21 +446,21 @@ def build_libelement_juce (bld):
 
 def build_console_app (bld):
     bld.recurse ('console')
+    bld.add_group()
 
-def build_juce_app (bld):
+def build_UI (bld):
     import plugins
     appEnv = plugins.derive_env (bld)
     
-    sources = [ 'UI/UI.cpp' ]
-    sources += element_juce_app_sources (bld) + \
-               element_juce_sources (bld)
+    sources = element_juce_app_sources (bld) + \
+              element_juce_sources (bld)
 
-    app = bld (
-        features    = 'cxx cxxshlib',
+    app = bld.objects (
+        features    = 'cxx',
         source      = sources,
-        includes    = common_includes(),
+        includes    = juce_includes(),
         target      = 'modules/UI.element/UI',
-        name        = 'ELEMENT_UI',
+        name        = 'UI_objects',
         env         = appEnv,
         use         = [ 'ELEMENT', 'ELEMENT_JUCE', 'DEPENDS' ],
         cflags      = ['-fvisibility=hidden' ],
@@ -562,14 +468,15 @@ def build_juce_app (bld):
         linkflags   = ['-fvisibility=hidden' ],
         defines     = ['EL_PRO=1']
     )
+
     bld (
         features='subst',
-        source ='UI/manifest.lua',
+        source ='modules/UI.element/manifest.lua',
         target = 'modules/UI.element/manifest.lua',
     )
-    app.includes.append ('libs/lua')
-    app.includes.append ('libs/lua-kv/src')
-    app.includes.append ('libs/lua-kv/include')
+    # app.includes.append ('libs/lua')
+    # app.includes.append ('libs/lua-kv/src')
+    # app.includes.append ('libs/lua-kv/include')
 
     if bld.host_is_linux():
         build_desktop (bld)
@@ -589,6 +496,7 @@ def build_juce_app (bld):
         #                                                  '-Wl,--no-whole-archive' ])
         # app.use += [ 'STATIC_GCC' ]
         # app.install_path = bld.env.BINDIR
+    bld.add_group()
 
 def install_lua_files (bld):
     if not bld.host_is_linux() and not bld.host_is_mingw32():
@@ -636,28 +544,26 @@ def build (bld):
     if bld.options.minimal:
         return
 
-    build_liblua (bld)
     build_libelement (bld)
-    build_libelement_opengl (bld)
     build_libelement_juce (bld)
     
-    bld.add_group()
-    build_juce_app (bld)
-    bld.add_group()
+    for mod in 'jack juce lv2 opengl'.split():
+        moddir = 'modules/%s.element' % mod
+        if not os.path.exists (os.path.join (moddir, 'wscript')):
+            continue
+        bld.recurse ('modules/%s.element' % mod)
+        bld.add_group()
+    
+    build_UI (bld)
     build_console_app (bld)
 
-    install_lua_files (bld)
-
-    modstobuild = 'JLV2'.split()
-    for mod in modstobuild:
-        bld.recurse ('modules/%s.element' % mod)
-    
     # build_vst (bld)
     # build_vst3 (bld)
 
     if bld.env.TEST:
         bld.recurse ('test')
 
+    install_lua_files (bld)
     bld.install_files (os.path.join (bld.env.PREFIX, 'include/element'),
                        bld.path.ant_glob ("libs/element/include/element/**/*.h") + \
                        bld.path.ant_glob ("libs/element/include/element/**/*.hpp"),
@@ -749,6 +655,30 @@ def format (ctx):
     cmd = ctx.env.CLANG_FORMAT_ALL + './libs/element'.split()
     call (cmd)
 
+def run (ctx):
+    sep = envkey = ''
+
+    if ctx.host_is_linux():
+        sep = ':'
+        envkey = 'LD_LIBRARY_PATH'
+    elif ctx.host_is_mac():
+        sep = ':'
+        envkey = 'DYLD_LIBRARY_PATH'
+    elif ctx.host_is_windows():
+        sep = ';'
+        envkey = ''
+    
+    join = os.path.join
+    libpath = [ join ('build', 'lib') ]
+    
+    if ctx.env.HAVE_DEPENDS:
+        libpath.append (join (ctx.env.DEPENDSDIR, 'lib'))
+
+    if isinstance (envkey, str) and len (envkey) > 0:
+        os.environ[envkey] = sep.join (libpath)
+    
+    call ([ 'python', 'tools/run.py' ])
+
 from waflib.Build import BuildContext
 
 class ResaveBuildContext (BuildContext):
@@ -770,3 +700,7 @@ class CopyDLLsContext (BuildContext):
 class FormatContext (BuildContext):
     cmd = 'format'
     fun = 'format'
+
+class RunContext (BuildContext):
+    cmd = 'run'
+    fun = 'run'

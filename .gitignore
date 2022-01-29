@@ -52,3 +52,4 @@ node_modules
 docs/_build/
 
 /install/
+/stage/

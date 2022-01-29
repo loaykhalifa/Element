@@ -1,0 +1,23 @@
+import os, plugins
+
+def build (bld):
+    bld (
+        features        = 'cxx cxxshlib',
+        includes        = '''
+            ../../libs/element/include
+            ../../libs/JUCE/modules
+            ../../src'''.split(),
+        source          = [ 'juce.cpp' ],
+        name            = 'JUCE_element',
+        target          = 'juce',
+        use             = [ 'ELEMENT_JUCE' ],
+        env             = plugins.derive_env (bld),
+        install_path    = plugins.install_path (bld, 'juce')
+    )
+
+    bld (
+        features        = 'subst',
+        source          = 'manifest.lua',
+        target          = 'manifest.lua',
+        install_path    =  plugins.install_path (bld, 'juce')
+    )

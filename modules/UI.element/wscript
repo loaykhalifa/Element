@@ -1,0 +1,31 @@
+import plugins
+
+def build (bld):
+    UI = bld (
+        features = 'cxx cxxshlib',
+        source = '''
+            UI.cpp
+        '''.split(),
+        includes = [ '.', '../../libs/element/include', 'glad/include' ],
+        name            = 'UI_element',
+        target          = 'UI',
+        cppflags        = [],
+        linkflags       = [],
+        env             = plugins.derive_env (bld),
+        install_path    = plugins.install_path (bld, 'UI'),
+        use             = [ 'UI_objects' ]
+    )
+
+    if bld.host_is_linux():
+        pass
+    elif bld.host_is_windows():
+        pass
+    elif bld.host_is_mac():
+        pass
+
+    bld (
+        features        = 'subst',
+        source          = 'manifest.lua',
+        target          = 'manifest.lua',
+        install_path    = plugins.install_path (bld, 'UI')
+    )

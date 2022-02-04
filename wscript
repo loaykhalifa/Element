@@ -445,10 +445,10 @@ def build_libelement_juce (bld):
     bld.add_group()
 
 def build_console_app (bld):
-    bld.recurse ('console')
+    bld.recurse ('tools/console')
     bld.add_group()
 
-def build_UI (bld):
+def build_UI_objects (bld):
     import plugins
     appEnv = plugins.derive_env (bld)
     
@@ -559,7 +559,7 @@ def build (bld):
 
     build_libelement (bld)
     build_libelement_juce (bld)
-    build_UI (bld)
+    build_UI_objects (bld)
     build_juce_app (bld)
     build_console_app (bld)
 

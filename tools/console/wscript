@@ -1,0 +1,18 @@
+#!/usr/bin/python
+
+def build (bld):
+    console = bld.program (
+        source          = [ 'interpreter.cpp', 'main.cpp' ],
+        includes        = [ '.' ],
+        target          = '../../bin/lua-el',
+        name            = 'lua-el',
+        env             = bld.env.derive(),
+        use             = [ 'DEPENDS', 'ELEMENT' ],
+        linkflags       = [],
+        defines         = [],
+        install_path    = None
+    )
+
+    if isinstance(bld.env.LIB_READLINE, list) and len(bld.env.LIB_READLINE) > 0:
+        console.use.append ('READLINE')
+        console.defines.append ('LUA_USE_READLINE=1')

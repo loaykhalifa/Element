@@ -9,8 +9,6 @@ APPNAME         = element.APPNAME
 VERSION         = element.VERSION
 PLUGIN_VERSION  = element.PLUGIN_VERSION
 
-VST3_PATH = 'libs/JUCE/modules/juce_audio_processors/format_types/VST3_SDK'
-
 def options (opt):
     opt.load ("scripting compiler_c compiler_cxx ccache compiler juce depends host")
 
@@ -20,6 +18,8 @@ def options (opt):
         help="Disable LV2 plugin hosting")
     opt.add_option ('--with-vstsdk24', default='', dest='vstsdk24', type='string', 
         help='Path to vstsdk2.4 sources')
+    opt.add_option ('--with-vst3sdk', default='', dest='vst3sdk', type='string', 
+        help='Path to vstsdk v3 sources')
     opt.add_option ('--disable-vst', default=False, action='store_true', dest='no_vst', \
         help="Disable VST2 plugin hosting")
     opt.add_option ('--disable-vst3', default=False, action='store_true', dest='no_vst3', \
@@ -161,7 +161,6 @@ def configure (conf):
 
 def juce_includes():
     return [
-        VST3_PATH, \
         'libs/JUCE/modules', \
         'libs/kv/modules', \
         'libs/jlv2/modules', \

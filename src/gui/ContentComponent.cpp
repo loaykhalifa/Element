@@ -177,12 +177,7 @@ public:
         }
         else
         {
-           #if defined (EL_PRO)
             showExt = props->getValue ("clockSource") == "midiClock";
-           #else
-            showExt = false;
-            ignoreUnused (props);
-           #endif
         }
        
         if (session)
@@ -194,7 +189,6 @@ public:
         }
         
         mapButton.setEnabled (true);
-
         resized();
     }
     
@@ -363,6 +357,9 @@ public:
     {
         sampleRate.addListener (this);
         streamingStatus.addListener (this);
+        if (isPluginVersion())
+            latencySamplesChangedConnection = world.getAudioEngine()->sampleLatencyChanged.connect(
+                std::bind (&StatusBar::updateLabels, this));
         
         addAndMakeVisible (sampleRateLabel);
         addAndMakeVisible (streamingStatusLabel);
@@ -387,6 +384,7 @@ public:
     
     ~StatusBar()
     {
+        latencySamplesChangedConnection.disconnect();
         sampleRate.removeListener (this);
         streamingStatus.removeListener (this);
     }
@@ -429,6 +427,8 @@ public:
 
             if (auto* pe = findParentComponentOfClass<PluginEditor>())
             {
+                // workaround - 
+                engine->updateExternalLatencySamples();
                 const int latencySamples = pe->getLatencySamples();
                 text << latencySamples << " samples";
             }
@@ -488,6 +488,8 @@ private:
     ValueTree node;
     Value sampleRate, streamingStatus, status;
     
+    SignalConnection latencySamplesChangedConnection;
+
     friend class Timer;
     void timerCallback() override {
         updateLabels();

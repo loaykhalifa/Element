@@ -6,6 +6,7 @@ here=`pwd`
 
 ./waf configure --depends="/depends/x86_64-w64-mingw32" \
     --with-vstsdk24="/SDKs/vstsdk2.4" \
+    --with-vst3sdk="/SDKs/vst3sdk" \
     --with-asiosdk="/SDKs/asiosdk" \
     --prefix="/" \
     --bindir="/" \
@@ -14,7 +15,7 @@ here=`pwd`
     --luadir="/lua"
 ./waf build ${WAF_BUILD_OPTIONS}
 
-pkgname="element-win64-mingw32-`./waf version`"
+pkgname="element-win64-`./waf version`_`date +%Y%m%d`"
 win64dir="/dist/${pkgname}"
 ./waf install --destdir="$win64dir"
 cp build/bin/*.dll "$win64dir"

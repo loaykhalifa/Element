@@ -93,7 +93,7 @@ Result ScriptNode::loadScript (const String& newCode)
     {
         if (prepared)
             newScript->prepare (sampleRate, blockSize);
-        triggerPortReset();
+        triggerPortReset (false);
         ScopedLock sl (lock);
         if (script != nullptr)
             newScript->copyParameterValues (*script);

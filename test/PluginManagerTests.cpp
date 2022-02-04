@@ -13,8 +13,11 @@ BOOST_AUTO_TEST_CASE (SupportedFormats)
         BOOST_REQUIRE (! manager.isAudioPluginFormatSupported (supported));
     
     manager.addDefaultFormats();
-    for (const auto& supported : Util::getSupportedAudioPluginFormats())
+    for (const auto& supported : Util::getSupportedAudioPluginFormats()) {
+        if (supported == "LV2")
+            continue;
         BOOST_REQUIRE (manager.isAudioPluginFormatSupported (supported));
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

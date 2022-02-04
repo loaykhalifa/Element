@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE (Internals)
         nodes.getPluginDescriptions (types, ID);
     }
 
-    BOOST_REQUIRE (nodes.getKnownIDs().size() == expectedIDs.size());
+    BOOST_CHECK_EQUAL (nodes.getKnownIDs().size(), expectedIDs.size());
     BOOST_REQUIRE (types.size() == expectedIDs.size());
     for (const auto* tp : types)
     {

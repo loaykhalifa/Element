@@ -48,9 +48,11 @@ NodeFactory::NodeFactory()
     add<OSCReceiverNode> (EL_INTERNAL_ID_OSC_RECEIVER);
     add<ScriptNode> (EL_INTERNAL_ID_SCRIPT);
     add<GraphNode> (EL_INTERNAL_ID_GRAPH);
-
+// FIXME: check video support in configure
+#if HAVE_EVG
     add<ImageNode> (EL_INTERNAL_ID_IMAGE);
     add<VideoOutputNode> (EL_INTERNAL_ID_VIDEO_OUTPUT);
+#endif
 }
 
 NodeFactory::~NodeFactory() 

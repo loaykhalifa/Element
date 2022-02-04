@@ -28,7 +28,6 @@ static bool copyData()
     return dataDir.copyDirectoryTo (buildDir.getChildFile ("data"));
 }
 
-
 class TestApp : public JUCEApplication,
                 public AsyncUpdater
 {

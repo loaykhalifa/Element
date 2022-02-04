@@ -18,7 +18,7 @@
 
 #pragma once
 
-#include "JuceHeader.h"
+#include <element/juce.hpp>
 #include "ElementApp.h"
 #include "controllers/AppController.h"
 #include "controllers/SessionController.h"
@@ -93,7 +93,7 @@ protected:
 
     const File getTestsDir() const
     {
-        const auto thedir = File::getCurrentWorkingDirectory().getChildFile ("tests");
+        const auto thedir = File::getCurrentWorkingDirectory().getChildFile ("test");
         jassert (thedir.exists());
         return thedir;
     }

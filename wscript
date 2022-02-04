@@ -159,8 +159,9 @@ def configure (conf):
     conf.message ("CXXFLAGS",       conf.env.CXXFLAGS)
     conf.message ("LINKFLAGS",      conf.env.LINKFLAGS)
 
-def juce_includes():
+def juce_includes (ctx):
     return [
+        ctx.env.VST3SDK_PATH, \
         'libs/JUCE/modules', \
         'libs/kv/modules', \
         'libs/jlv2/modules', \
@@ -286,7 +287,7 @@ def build_vst_linux (bld, plugin):
             'tools/jucer/%s/Source/%s.cpp' % (plugin, plugin),
             'libs/compat/include_juce_audio_plugin_client_VST2.cpp'
         ],
-        includes        = juce_includes(),
+        includes        = juce_includes (bld),
         target          = 'plugins/VST/%s' % plugin,
         name            = 'ELEMENT_VST',
         env             = vstEnv,
@@ -328,7 +329,7 @@ def build_vst3_linux (bld, plugin):
             'tools/jucer/%s/Source/%s.cpp' % (plugin, plugin),
             'libs/compat/include_juce_audio_plugin_client_VST3.cpp'
         ],
-        includes        = juce_includes(),
+        includes        = juce_includes (bld),
         env             = vstEnv,
         use             = [ 'ELEMENT', 'LUA', vst3.name ]
     )
@@ -381,7 +382,7 @@ def build_libelement_juce (bld):
     library = bld (
         features    = 'cxx cxxshlib',
         source      = el_lua_sources + jsources + app_sources,
-        includes    = juce_includes() + [ 'libs/element/include' ],
+        includes    = juce_includes (bld) + [ 'libs/element/include' ],
         target      = 'lib/element-juce',
         name        = 'ELEMENT_JUCE',
         env         = env,
@@ -455,10 +456,10 @@ def build_UI (bld):
               element_juce_sources (bld)
 
     app = bld.objects (
-        features    = 'cxx',
+        features    = 'cxx cxxstlib',
         source      = sources,
-        includes    = juce_includes(),
-        target      = 'modules/UI.element/UI',
+        includes    = juce_includes (bld),
+        target      = 'libs/UI_objects',
         name        = 'UI_objects',
         env         = appEnv,
         use         = [ 'ELEMENT', 'ELEMENT_JUCE', 'DEPENDS' ],
@@ -467,10 +468,11 @@ def build_UI (bld):
         linkflags   = ['-fvisibility=hidden' ],
         defines     = ['EL_PRO=1']
     )
+    app.export_includes = app.includes
 
     bld (
         features='subst',
-        source ='modules/UI.element/manifest.lua',
+        source = 'modules/UI.element/manifest.lua',
         target = 'modules/UI.element/manifest.lua',
     )
     # app.includes.append ('libs/lua')
@@ -495,6 +497,18 @@ def build_UI (bld):
         #                                                  '-Wl,--no-whole-archive' ])
         # app.use += [ 'STATIC_GCC' ]
         # app.install_path = bld.env.BINDIR
+    bld.add_group()
+
+def build_juce_app (bld):
+    bld.program (
+        includes    = [ 'src' ],
+        source      = 'libs/compat/JuceMain.cpp',
+        target      = 'bin/eljuce',
+        name        = 'ELEMENT_juce_app',
+        env         = bld.env.derive(),
+        use         = [ 'UI_objects', 'ELEMENT_JUCE' ]
+    )
+
     bld.add_group()
 
 def install_lua_files (bld):
@@ -545,16 +559,16 @@ def build (bld):
 
     build_libelement (bld)
     build_libelement_juce (bld)
-    
+    build_UI (bld)
+    build_juce_app (bld)
+    build_console_app (bld)
+
     for mod in 'jack juce lv2 opengl'.split():
         moddir = 'modules/%s.element' % mod
         if not os.path.exists (os.path.join (moddir, 'wscript')):
             continue
         bld.recurse ('modules/%s.element' % mod)
         bld.add_group()
-    
-    build_UI (bld)
-    build_console_app (bld)
 
     # build_vst (bld)
     # build_vst3 (bld)

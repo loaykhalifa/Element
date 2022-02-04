@@ -69,5 +69,3 @@ def build (bld):
     elif bld.host_is_windows():
         library.defines += [ 'EL_DLLEXPORT=1' ]
     library.export_includes = library.includes
-    bld.env.LINKFLAGS_ELEMENT = 'element'
-    bld.env.CXXFLAGS_ELEMENT = ['-Iinclude']

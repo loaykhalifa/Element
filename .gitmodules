@@ -4,3 +4,6 @@
 [submodule "libs/jlv2"]
 	path = libs/jlv2
 	url = https://github.com/lvtk/jlv2
+[submodule "libs/kv"]
+	path = libs/kv
+	url = https://github.com/kushview/kv-modules

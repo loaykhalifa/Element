@@ -469,45 +469,30 @@ def build_UI_objects (bld):
         defines     = ['EL_PRO=1']
     )
     app.export_includes = app.includes
+    bld.add_group()
 
-    bld (
-        features='subst',
-        source = 'modules/UI.element/manifest.lua',
-        target = 'modules/UI.element/manifest.lua',
+def build_juce_app (bld):
+    app = bld.program (
+        includes    = [ 'src' ],
+        source      = 'libs/compat/JuceMain.cpp',
+        target      = 'bin/element',
+        name        = 'ELEMENT_juce_app',
+        env         = bld.env.derive(),
+        use         = [ 'UI_objects', 'ELEMENT_JUCE' ]
     )
-    # app.includes.append ('libs/lua')
-    # app.includes.append ('libs/lua-kv/src')
-    # app.includes.append ('libs/lua-kv/include')
 
     if bld.host_is_linux():
         build_desktop (bld)
 
     elif bld.host_is_mac():
-        pass
-        # app.target       = 'Applications/Element'
-        # app.mac_app      = True
-        # app.mac_plist    = 'build/data/Info.plist'
-        # app.mac_files    = [ 'data/Icon.icns' ]
-        # add_scripts_to (bld, '%s.app/Contents/Resources' % app.target, None)
+        app.target       = 'Applications/Element'
+        app.mac_app      = True
+        app.mac_plist    = 'build/data/Info.plist'
+        app.mac_files    = [ 'data/Icon.icns' ]
+        add_scripts_to (bld, '%s.app/Contents/Resources' % app.target, None)
 
     elif bld.host_is_mingw32():
-        app.defines += ['JUCE_DLL_BUILD=1', 'EL_DLLEXPORT=1']
-        # app.env.append_unique ('LINKFLAGS_STATIC_GCC', [ '-static-libgcc', '-static-libstdc++',
-        #                                                  '-Wl,-Bstatic,--whole-archive', '-lwinpthread', 
-        #                                                  '-Wl,--no-whole-archive' ])
-        # app.use += [ 'STATIC_GCC' ]
-        # app.install_path = bld.env.BINDIR
-    bld.add_group()
-
-def build_juce_app (bld):
-    bld.program (
-        includes    = [ 'src' ],
-        source      = 'libs/compat/JuceMain.cpp',
-        target      = 'bin/eljuce',
-        name        = 'ELEMENT_juce_app',
-        env         = bld.env.derive(),
-        use         = [ 'UI_objects', 'ELEMENT_JUCE' ]
-    )
+        pass
 
     bld.add_group()
 
